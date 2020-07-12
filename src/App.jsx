@@ -1,25 +1,54 @@
 import React, { useState } from 'react';
 import './index.css';
+import ToDoList from './ToDoList';
 
 
-function App(){
+const App = () => {
 
-    let newTime = new Date().toLocaleTimeString();
+    const [inputTask, setInputTask] = useState();
+    const [items, setItems] = useState([]);
 
-    const [cTime, setCTime] = useState(newTime);
-
-    function refresh(){
-        newTime = new Date().toLocaleTimeString();
-        setCTime(newTime);
+    function textarea(e) {
+        setInputTask(e.target.value);
     }
-    
-    setInterval(refresh, 1000);
-    return(
-    <>  
-        <h1 className="time">{cTime}</h1>
-    </>
-    );
-}
 
+    function addtask (){
+        setItems((oldItems) => {
+            return (
+                [...oldItems, inputTask]
+            );
+        });
+        setInputTask("");
+    }
+
+    function delete_task(id){
+        setItems((oldItems) => {
+            return oldItems.filter((arrElem, index) => {
+                return index !== id;
+            });  
+        })
+    }
+
+    return(<>
+        <div className="container">
+            <div className="todoapp">
+                <div className="todohead"><p>Todo App</p></div>
+                <div className="adding-area">
+                    <input type="text" className="textarea" placeholder="Add Task" onChange={textarea} value={inputTask}/>  
+                    <button className="add-btn" onClick={addtask} >+</button>
+                </div>
+                <div className="list">
+                    <ol className="ol-list">
+                        {
+                            items.map((itemval, index) => {
+                            return <ToDoList text={itemval} key={index} id={index} onSelect={delete_task}/>;
+                        })
+                        }
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </>);
+}
 
 export default App;
